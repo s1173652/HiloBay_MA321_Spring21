@@ -1,0 +1,57 @@
+---
+title: "Data Cleaning & Descriptives"
+author: "Brianna Cirillo"
+output: html_notebook
+---
+
+```{r}
+hilo <- hbb_wku_h_xts
+hilo <- hilo[529:54816]
+which(hilo$date=="2010-10-23 00:00:00")
+which(hilo$date=="2016-12-31 23:00:00")
+```
+
+```{r}
+ggplot(hilo,  aes(x = Index, y = as.numeric(logcms))) + 
+  geom_line()
+```
+
+```{r}
+ggplot(hilo,  aes(x = Index, y = as.numeric(ChlRFU))) + 
+  geom_line()
+```
+
+```{r}
+ggplot(hilo,  aes(x = Index, y = as.numeric(Corr.NTU))) + 
+  geom_line()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
