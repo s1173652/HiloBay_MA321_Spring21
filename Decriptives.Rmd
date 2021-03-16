@@ -85,19 +85,34 @@ print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per t
 ```{r}
 hist(as.numeric(hilo$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 
+# this looks okay
 ```
 
 ```{r}
+# VERY skewed
 hist(as.numeric(hilo$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
 
+# this looks better
+hist(log(as.numeric(hilo$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
+# not sure what happens to units when taking the log 
 ```
 
 ```{r}
+# VERY skewed
 hist(as.numeric(hilo$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
+
+# this looks better
+hist(log(as.numeric(hilo$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+# not sure what happens to units when taking the log 
 ```
 
 ```{r}
+# skewed
 hist(as.numeric(hilo$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+
+# this is worst!
+hist(log(as.numeric(hilo$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
+# not sure what happens to units when taking the log 
 ```
 
 # Denisty Plots
