@@ -47,6 +47,7 @@ RiverFlow <- ggplot(hilo,  aes(x = date, y = as.numeric(logcms))) +
   geom_line()
 
 print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "Log River Flow - cubic meters per second"))
+
 ```
 
 ```{r}
@@ -57,6 +58,7 @@ CHL <- ggplot(hilo,  aes(x = date, y = as.numeric(ChlRFU))) +
   geom_line()
 
 print(CHL + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+
 ```
 
 ```{r}
@@ -66,6 +68,7 @@ TURB <- ggplot(hilo,  aes(x = date, y = as.numeric(Corr.NTU))) +
   geom_line()
 
 print(TURB + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
+
 ```
 
 ```{r}
@@ -75,6 +78,7 @@ SALT <- ggplot(hilo,  aes(x = date, y = as.numeric(saltppt))) +
   geom_line()
 
 print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+
 ```
 
 # Histograms
@@ -96,10 +100,36 @@ hist(as.numeric(hilo$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidi
 hist(as.numeric(hilo$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
 ```
 
+# Denisty Plots
+
+```{r}
+rfdens <- ggplot(hilo,  aes(x = as.numeric(logcms))) + 
+  geom_density()
+
+rfdens
+```
 
 
+```{r}
+chldens <- ggplot(hilo,  aes(x = as.numeric(ChlRFU))) + 
+  geom_density()
 
+chldens
+```
 
+```{r}
+turbdens <- ggplot(hilo,  aes(x = as.numeric(Corr.NTU))) + 
+  geom_density()
+
+turbdens
+```
+
+```{r}
+saltdens <- ggplot(hilo,  aes(x = as.numeric(saltppt))) + 
+  geom_density()
+
+saltdens
+```
 
 
 
