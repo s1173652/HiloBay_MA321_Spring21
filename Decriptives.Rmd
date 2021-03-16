@@ -86,7 +86,10 @@ print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per t
 hist(as.numeric(hilo$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 
 # this looks okay
+
 ```
+
+
 
 ```{r}
 # VERY skewed
@@ -95,7 +98,9 @@ hist(as.numeric(hilo$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorop
 # this looks better
 hist(log(as.numeric(hilo$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
 # not sure what happens to units when taking the log 
+
 ```
+
 
 ```{r}
 # VERY skewed
@@ -112,6 +117,10 @@ hist(as.numeric(hilo$saltppt), main = "Histogram of Salinity", xlab = "Salinity 
 
 # this is worst!
 hist(log(as.numeric(hilo$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
+# not sure what happens to units when taking the log 
+
+# this is worst!
+hist(sqrt(as.numeric(hilo$saltppt)), main = "Histogram of Sqrt Salinity", xlab = "Salinity")
 # not sure what happens to units when taking the log 
 ```
 
@@ -131,6 +140,7 @@ chldens <- ggplot(hilo,  aes(x = as.numeric(ChlRFU))) +
 
 chldens
 ```
+
 
 ```{r}
 turbdens <- ggplot(hilo,  aes(x = as.numeric(Corr.NTU))) + 
