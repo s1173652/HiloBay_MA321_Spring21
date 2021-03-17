@@ -19,7 +19,6 @@ length(hilo[,1]) # we are left with 54288 lines of data
 
 54816 - length(hilo[,1]) # we lost 528 values 
 ```
-
 # Changing column names 
 ```{r}
 # removing columns that we are not using 
@@ -41,17 +40,25 @@ hilo
 # Descriptives: plots of variables over time
 ```{r}
 length(hilo$logcms[which(is.na(hilo$logcms)==TRUE)]) # 12 NAs 
-
+which(is.na(hilo$logcms)==TRUE)
 
 RiverFlow <- ggplot(hilo,  aes(x = date, y = as.numeric(logcms))) + 
   geom_line()
 
+RiverFloweexp <- ggplot(hilo,  aes(x = date, y = exp(as.numeric(logcms)))) + 
+  geom_line()
+
 print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "Log River Flow - cubic meters per second"))
+
+print(RiverFloweexp + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
 ```{r}
 length(hilo$ChlRFU[which(is.na(hilo$ChlRFU)==TRUE)]) # 20464 NAs
 
+# max(as.numeric(na.omit(hilo$ChlRFU))) # 15.3
+which(as.numeric(hilo$ChlRFU)==15.3)
+hilo[38974,]
 
 CHL <- ggplot(hilo,  aes(x = date, y = as.numeric(ChlRFU))) + 
   geom_line()
@@ -61,6 +68,9 @@ print(CHL + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative 
 
 ```{r}
 length(hilo$Corr.NTU[which(is.na(hilo$Corr.NTU)==TRUE)]) #15012 NAs
+# max(as.numeric(na.omit(hilo$Corr.NTU))) # 88.4
+which(as.numeric(hilo$Corr.NTU)==88.4)
+hilo[33243,]
 
 TURB <- ggplot(hilo,  aes(x = date, y = as.numeric(Corr.NTU))) + 
   geom_line()
@@ -113,25 +123,168 @@ hist(log(as.numeric(hilo$saltppt)), main = "Histogram of Log Salinity", xlab = "
 
 
 
+=========================================================================================
+
+
+# assuming we are only using 2013 to 2015 data 
+```{r}
+# start date: 2013-01-01 00:00:00
+# end date: 2015-12-31 23:00:00
+  
+hilomodified <- hilo[19225:45504,]
+length(hilo[,1])-length(hilomodified[,1])
+# lost 28008 entries of data 
+
+length(hilomodified[,1])-528
+# we are left with 25752 entries of data 
+
+
+head(hilomodified)
+tail(hilomodified)
 
 
 
+```
 
+# Descriptives: plots of variables over time
+```{r}
+length(hilomodified$logcms[which(is.na(hilomodified$logcms)==TRUE)]) # No NAs, YAY!
+which(is.na(hilomodified$logcms)==TRUE)
 
+RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = exp(as.numeric(logcms)))) + 
+  geom_line()
 
+print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
+# CHL
+```{r}
+sum(is.na(hilomodified$ChlRFU)==TRUE) # 1884 NAs
+#which(is.na(hilomodified$ChlRFU)==TRUE)
+# max(as.numeric(na.omit(hilo$ChlRFU))) # 15.3
+which(as.numeric(hilomodified$ChlRFU)==15.3)
+hilo[38974,]
 
+CHL2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(ChlRFU))) + 
+  geom_line()
 
+print(CHL2 + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+```
 
+```{r}
+#library(mosaic)
+favstats(hilomodified$ChlRFU)
+```
 
+# Turbitity
+```{r}
+length(hilomodified$Corr.NTU[which(is.na(hilomodified$Corr.NTU)==TRUE)]) # 2704 NAs
+# max(as.numeric(na.omit(hilo$Corr.NTU))) # 88.4
+which(as.numeric(hilo$Corr.NTU)==88.4)
+hilo[33243,]
 
+TURB2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(Corr.NTU))) + 
+  geom_line()
 
+print(TURB2 + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
+```
+```{r}
+favstats(hilomodified$Corr.NTU)
+```
 
+# Salt
+```{r}
+length(hilomodified$saltppt[which(is.na(hilomodified$saltppt)==TRUE)]) # 2267 NAs
 
+SALT2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(saltppt))) + 
+  geom_line()
 
+print(SALT2 + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+```
+```{r}
+favstats(hilomodified$saltppt)
+```
 
+# Histograms
+```{r}
+hist(as.numeric(hilomodified$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 
+# this looks okay
+```
 
+```{r}
+# VERY skewed
+hist(as.numeric(hilomodified$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
 
+# this looks better
+hist(log(as.numeric(hilomodified$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
+# not sure what happens to units when taking the log 
+```
 
+```{r}
+# VERY skewed
+hist(as.numeric(hilomodified$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
 
+# this looks better
+hist(log(as.numeric(hilomodified$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+# not sure what happens to units when taking the log 
+```
+
+```{r}
+# skewed
+hist(as.numeric(hilomodified$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+
+# this is worst!
+hist(log(as.numeric(hilomodified$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
+# not sure what happens to units when taking the log 
+```
+
+# Descriptives by Storm
+We are picking one storm from each year. We can indicate a storm has occured by the extreme events in the river flow data. 
+We will not use the log (which is logbase10) in order to see the extreme events
+```{r}
+RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(cms))) + 
+  geom_line()
+
+print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
+We need to break the data set by year to find the most extreme event for each year. 
+```{r}
+
+hilo2013 <- hilomodified[1:8760,]
+
+hilo2014 <- hilomodified[8761:17520,]
+
+hilo2015 <- hilomodified[17521:length(hilomodified[,1]),]
+```
+
+# 2013
+```{r}
+# max(as.numeric(hilo2013$logcms)) # this is log base 10 
+# This is NOT the natural log
+max(as.numeric(hilo2013$cms)) # 207.186 
+which(as.numeric(hilo2013$cms) == max(as.numeric(hilo2013$cms)))
+
+hilo2013[3550,]
+# all values for this storm are NA
+```
+
+# 2014
+```{r}
+# Max river flow in the overall data set
+max(as.numeric(hilo2014$cms))
+max(as.numeric(hilomodified$cms))
+
+which(as.numeric(hilo2014$cms) == max(as.numeric(hilo2014$cms)))
+
+hilo2014[5263,]
+```
+
+# 2015
+```{r}
+max(as.numeric(hilo2015$cms))
+
+which(as.numeric(hilo2015$cms) == max(as.numeric(hilo2015$cms)))
+
+hilo2015[6475,]
+```
 
