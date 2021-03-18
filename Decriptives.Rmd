@@ -361,6 +361,7 @@ print(R2015 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meter
 ```{r}
 outcomes <- as.numeric(hilomodified$saltppt)<25 
 index.lt25 <- which(outcomes==TRUE)
+
 poss.storms <- hilomodified[index.lt25,]
 poss.storms
 ```
@@ -368,12 +369,23 @@ poss.storms
 ```{r}
 outcomes.35 <- as.numeric(hilomodified$saltppt)<35 
 index.lt35 <- which(outcomes==TRUE)
+index.lt25
 poss.storms35 <- hilomodified[index.lt25,]
 poss.storms35
-19897
-19920
+
+hilomodified$date[16]
 ```
 
+```{r}
+storm.1.7.13 <- ggplot(hilomodified[145:168,],  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
+
+
 
 
