@@ -358,5 +358,22 @@ R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) +
 print(R2015 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
+```{r}
+outcomes <- as.numeric(hilomodified$saltppt)<25 
+index.lt25 <- which(outcomes==TRUE)
+poss.storms <- hilomodified[index.lt25,]
+poss.storms
+```
+
+```{r}
+outcomes.35 <- as.numeric(hilomodified$saltppt)<35 
+index.lt35 <- which(outcomes==TRUE)
+poss.storms35 <- hilomodified[index.lt25,]
+poss.storms35
+19897
+19920
+```
+
+```
 
 
