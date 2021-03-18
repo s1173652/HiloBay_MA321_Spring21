@@ -171,7 +171,7 @@ print(CHL2 + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative
 ```
 
 ```{r}
-#library(mosaic)
+library(mosaic)
 favstats(hilomodified$ChlRFU)
 ```
 
@@ -286,5 +286,21 @@ max(as.numeric(hilo2015$cms))
 which(as.numeric(hilo2015$cms) == max(as.numeric(hilo2015$cms)))
 
 hilo2015[6475,]
+```
+
+```{r}
+outcomes <- as.numeric(hilomodified$saltppt)<25 
+index.lt25 <- which(outcomes==TRUE)
+poss.storms <- hilomodified[index.lt25,]
+poss.storms
+```
+
+```{r}
+outcomes.35 <- as.numeric(hilomodified$saltppt)<35 
+index.lt35 <- which(outcomes==TRUE)
+poss.storms35 <- hilomodified[index.lt25,]
+poss.storms35
+19897
+19920
 ```
 
