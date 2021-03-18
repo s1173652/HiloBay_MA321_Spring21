@@ -171,7 +171,7 @@ print(CHL2 + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative
 ```
 
 ```{r}
-library(mosaic)
+#library(mosaic)
 favstats(hilomodified$ChlRFU)
 ```
 
@@ -202,6 +202,20 @@ print(SALT2 + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per 
 ```
 ```{r}
 favstats(hilomodified$saltppt)
+```
+
+# plot with all variables
+this is hard to see what is going on 
+```{r}
+RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line()+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="steelblue") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="springgreen")
+
+print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+RiverFlowexp2+ylim(0,45)
 ```
 
 # Histograms
@@ -238,6 +252,8 @@ hist(log(as.numeric(hilomodified$saltppt)), main = "Histogram of Log Salinity", 
 # not sure what happens to units when taking the log 
 ```
 
+=======================================================================================
+
 # Descriptives by Storm
 We are picking one storm from each year. We can indicate a storm has occured by the extreme events in the river flow data. 
 We will not use the log (which is logbase10) in order to see the extreme events
@@ -268,6 +284,39 @@ hilo2013[3550,]
 # all values for this storm are NA
 ```
 
+#### split by half the year
+```{r}
+
+R2013.1 <- ggplot(hilo2013[1:(length(hilo2013[,1])/2),],  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="purple1") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="cyan4")
+
+print(R2013.1 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+R2013.2 <- ggplot(hilo2013[(length(hilo2013[,1])/2):length(hilo2013[,1]),],  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="purple1") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="cyan4")
+
+print(R2013.2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+R2013.2+ylim(0,40)
+R2013.1+ylim(0,40)
+```
+#### the whole year
+```{r}
+
+R2013 <- ggplot(hilo2013,  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(R2013 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
 # 2014
 ```{r}
 # Max river flow in the overall data set
@@ -277,6 +326,17 @@ max(as.numeric(hilomodified$cms))
 which(as.numeric(hilo2014$cms) == max(as.numeric(hilo2014$cms)))
 
 hilo2014[5263,]
+```
+
+
+```{r}
+R2014 <- ggplot(hilo2014,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(R2014 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
 # 2015
@@ -289,18 +349,14 @@ hilo2015[6475,]
 ```
 
 ```{r}
-outcomes <- as.numeric(hilomodified$saltppt)<25 
-index.lt25 <- which(outcomes==TRUE)
-poss.storms <- hilomodified[index.lt25,]
-poss.storms
+R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(R2015 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
-```{r}
-outcomes.35 <- as.numeric(hilomodified$saltppt)<35 
-index.lt35 <- which(outcomes==TRUE)
-poss.storms35 <- hilomodified[index.lt25,]
-poss.storms35
-19897
-19920
-```
+
 
