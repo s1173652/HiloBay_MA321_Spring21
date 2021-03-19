@@ -1,6 +1,6 @@
 ---
 title: "Data Cleaning & Descriptives"
-author: "Brianna Cirillo"
+author: "Brianna Cirillo & Odalys Barrientos"
 output: html_notebook
 ---
 # Matching the bouy data to the other data collected 
@@ -13,12 +13,12 @@ hilo
 
 # which(hilo$date=="2016-12-31 23:00:00") = index 54816
 ```
-
 ```{r}
 length(hilo[,1]) # we are left with 54288 lines of data
 
 54816 - length(hilo[,1]) # we lost 528 values 
 ```
+
 # Changing column names 
 ```{r}
 # removing columns that we are not using 
@@ -37,27 +37,28 @@ hilo$DOper10 <- NULL # dissolved oxygen
 
 hilo
 ```
-# Descriptives: plots of variables over time
+
+====================================================
+
+# FULL DATA SET 2012-2016
+# Descriptives: PLots
+
+## River Flow FULL DATA SET
 ```{r}
 length(hilo$logcms[which(is.na(hilo$logcms)==TRUE)]) # 12 NAs 
 which(is.na(hilo$logcms)==TRUE)
 
-RiverFlow <- ggplot(hilo,  aes(x = date, y = as.numeric(logcms))) + 
+RiverFlow <- ggplot(hilo,  aes(x = date, y = as.numeric(cms))) + 
   geom_line()
 
-RiverFloweexp <- ggplot(hilo,  aes(x = date, y = exp(as.numeric(logcms)))) + 
-  geom_line()
-
-print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "Log River Flow - cubic meters per second"))
-
-print(RiverFloweexp + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
-
+## CHL FULL DATA SET
 ```{r}
 length(hilo$ChlRFU[which(is.na(hilo$ChlRFU)==TRUE)]) # 20464 NAs
 
-# max(as.numeric(na.omit(hilo$ChlRFU))) # 15.3
-which(as.numeric(hilo$ChlRFU)==15.3)
+which(as.numeric(hilo$ChlRFU)==max(as.numeric(na.omit(hilo$ChlRFU)))) # 15.3 max 
+# CHL tells us where in the data set this happened  
 hilo[38974,]
 
 CHL <- ggplot(hilo,  aes(x = date, y = as.numeric(ChlRFU))) + 
@@ -65,19 +66,20 @@ CHL <- ggplot(hilo,  aes(x = date, y = as.numeric(ChlRFU))) +
 
 print(CHL + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
 ```
-
+## Turbity FULL DATA SET
 ```{r}
 length(hilo$Corr.NTU[which(is.na(hilo$Corr.NTU)==TRUE)]) #15012 NAs
-# max(as.numeric(na.omit(hilo$Corr.NTU))) # 88.4
-which(as.numeric(hilo$Corr.NTU)==88.4)
+
+which(as.numeric(hilo$Corr.NTU)==max(as.numeric(na.omit(hilo$Corr.NTU)))) # 88.4
+# tells us where in the data set this happened
 hilo[33243,]
 
-TURB <- ggplot(hilo,  aes(x = date, y = as.numeric(Corr.NTU))) + 
+TURB <- ggplot(hilo,aes(x = date, y = as.numeric(Corr.NTU))) + 
   geom_line()
 
 print(TURB + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
 ```
-
+## Salinity FULL DATA SET
 ```{r}
 length(hilo$saltppt[which(is.na(hilo$saltppt)==TRUE)]) #11330 NAs
 
@@ -87,13 +89,15 @@ SALT <- ggplot(hilo,  aes(x = date, y = as.numeric(saltppt))) +
 print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
 ```
 
-# Histograms
+========================================================
+# Histograms FULL DATA SET
+## River Flow Histogram
 ```{r}
 hist(as.numeric(hilo$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 
 # this looks okay
 ```
-
+## CHL Histogram
 ```{r}
 # VERY skewed
 hist(as.numeric(hilo$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
@@ -102,7 +106,7 @@ hist(as.numeric(hilo$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorop
 hist(log(as.numeric(hilo$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
 # not sure what happens to units when taking the log 
 ```
-
+## Turbity Histogram
 ```{r}
 # VERY skewed
 hist(as.numeric(hilo$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
@@ -111,7 +115,7 @@ hist(as.numeric(hilo$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidi
 hist(log(as.numeric(hilo$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
 # not sure what happens to units when taking the log 
 ```
-
+## Salinity Histogram
 ```{r}
 # skewed
 hist(as.numeric(hilo$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
@@ -121,42 +125,57 @@ hist(log(as.numeric(hilo$saltppt)), main = "Histogram of Log Salinity", xlab = "
 # not sure what happens to units when taking the log 
 ```
 
-
-
-=========================================================================================
-
-
-# assuming we are only using 2013 to 2015 data 
+=========================================================
+# NEW DATA SET-Modified Data 2013-2015
 ```{r}
 # start date: 2013-01-01 00:00:00
 # end date: 2015-12-31 23:00:00
-  
 hilomodified <- hilo[19225:45504,]
 length(hilo[,1])-length(hilomodified[,1])
 # lost 28008 entries of data 
 
-length(hilomodified[,1])-528
-# we are left with 25752 entries of data 
+length(hilomodified[,1])-528 # we are left with 25752 entries of data 
 
 
 head(hilomodified)
 tail(hilomodified)
 
-
-
 ```
 
-# Descriptives: plots of variables over time
+# Descriptives on all variables MODIFIED DATA SET: Using Favstats
+## River Flow Favstats
+```{r}
+#library(mosaic)
+favstats(hilomodified$cms)
+```
+## CHL Favstats
+```{r}
+favstats(hilomodified$ChlRFU)
+```
+## Turbitity Favstats
+```{r}
+favstats(hilomodified$Corr.NTU)
+```
+## Salinity Favstats
+```{r}
+favstats(hilomodified$saltppt)
+```
+
+=====================================================
+# MODIFIED DATA SET 2013-2015
+# Descriptives: Plots
+
+## River Flow MODIFIED
 ```{r}
 length(hilomodified$logcms[which(is.na(hilomodified$logcms)==TRUE)]) # No NAs, YAY!
 which(is.na(hilomodified$logcms)==TRUE)
 
-RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = exp(as.numeric(logcms)))) + 
+RiverFlowMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(cms))) + 
   geom_line()
 
-print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+print(RiverFlowMod + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
-# CHL
+## CHL MODIFIED
 ```{r}
 sum(is.na(hilomodified$ChlRFU)==TRUE) # 1884 NAs
 #which(is.na(hilomodified$ChlRFU)==TRUE)
@@ -164,67 +183,45 @@ sum(is.na(hilomodified$ChlRFU)==TRUE) # 1884 NAs
 which(as.numeric(hilomodified$ChlRFU)==15.3)
 hilo[38974,]
 
-CHL2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(ChlRFU))) + 
+CHLMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(ChlRFU))) + 
   geom_line()
 
-print(CHL2 + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+print(CHLMod + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
 ```
 
-```{r}
-#library(mosaic)
-favstats(hilomodified$ChlRFU)
-```
 
-# Turbitity
+# Turbitity MODIFIED
 ```{r}
 length(hilomodified$Corr.NTU[which(is.na(hilomodified$Corr.NTU)==TRUE)]) # 2704 NAs
 # max(as.numeric(na.omit(hilo$Corr.NTU))) # 88.4
 which(as.numeric(hilo$Corr.NTU)==88.4)
 hilo[33243,]
 
-TURB2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(Corr.NTU))) + 
+TURBMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(Corr.NTU))) + 
   geom_line()
 
-print(TURB2 + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
-```
-```{r}
-favstats(hilomodified$Corr.NTU)
+print(TURBMod + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
 ```
 
-# Salt
+# Salinity MODIFIED
 ```{r}
 length(hilomodified$saltppt[which(is.na(hilomodified$saltppt)==TRUE)]) # 2267 NAs
 
-SALT2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(saltppt))) + 
+SALTMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(saltppt))) + 
   geom_line()
 
-print(SALT2 + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+print(SALTMod + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
 ```
-```{r}
-favstats(hilomodified$saltppt)
-```
+===================================================
+# Histograms MODIFIED 
 
-# plot with all variables
-this is hard to see what is going on 
-```{r}
-RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(logcms))) + 
-  geom_line()+
-  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="steelblue") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="springgreen")
-
-print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
-
-RiverFlowexp2+ylim(0,45)
-```
-
-# Histograms
+## River Flow MODIFIED
 ```{r}
 hist(as.numeric(hilomodified$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 
 # this looks okay
 ```
-
+## CHL MODIFIED
 ```{r}
 # VERY skewed
 hist(as.numeric(hilomodified$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
@@ -233,7 +230,7 @@ hist(as.numeric(hilomodified$ChlRFU), main = "Histogram of Chlorophyll", xlab = 
 hist(log(as.numeric(hilomodified$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
 # not sure what happens to units when taking the log 
 ```
-
+## Turbitity MODIFIED
 ```{r}
 # VERY skewed
 hist(as.numeric(hilomodified$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
@@ -242,7 +239,7 @@ hist(as.numeric(hilomodified$Corr.NTU), main = "Histogram of Turbidity", xlab = 
 hist(log(as.numeric(hilomodified$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
 # not sure what happens to units when taking the log 
 ```
-
+## Salinity MODIFIED
 ```{r}
 # skewed
 hist(as.numeric(hilomodified$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
@@ -251,21 +248,30 @@ hist(as.numeric(hilomodified$saltppt), main = "Histogram of Salinity", xlab = "S
 hist(log(as.numeric(hilomodified$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
 # not sure what happens to units when taking the log 
 ```
+=============================================================
 
-=======================================================================================
-
-# Descriptives by Storm
-We are picking one storm from each year. We can indicate a storm has occured by the extreme events in the river flow data. 
-We will not use the log (which is logbase10) in order to see the extreme events
+# Plot with ALL Var 2013-2015
+It is hard to see what is going on 
 ```{r}
-RiverFlowexp2 <- ggplot(hilomodified,  aes(x = date, y = as.numeric(cms))) + 
-  geom_line()
+AllYears <- ggplot(hilomodified,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line()+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
 
-print(RiverFlowexp2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+print(AllYears + ggtitle("Hilo Bay")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
 ```
-We need to break the data set by year to find the most extreme event for each year. 
-```{r}
 
+
+==============================================================
+# Descriptives by Storm
+We are picking one storm from each year. We can indicate a storm has occurred by the extreme events in the river flow data. 
+We will not use the log (which is logbase10) in order to see the extreme events
+When salinity is below 35 this also indicates a storm has occurred. 
+
+We will break the data set by year to find the most extreme event for each year. 
+```{r}
 hilo2013 <- hilomodified[1:8760,]
 
 hilo2014 <- hilomodified[8761:17520,]
@@ -273,7 +279,7 @@ hilo2014 <- hilomodified[8761:17520,]
 hilo2015 <- hilomodified[17521:length(hilomodified[,1]),]
 ```
 
-# 2013
+# 2013 Data & Plot
 ```{r}
 # max(as.numeric(hilo2013$logcms)) # this is log base 10 
 # This is NOT the natural log
@@ -282,42 +288,37 @@ which(as.numeric(hilo2013$cms) == max(as.numeric(hilo2013$cms)))
 
 hilo2013[3550,]
 # all values for this storm are NA
+
+plot2013 <- ggplot(hilo2013,  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+
+print(plot2013 + ggtitle("2013")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
-#### split by half the year
+#### Split 2013 into 6 months to get a better visual
 ```{r}
-
-R2013.1 <- ggplot(hilo2013[1:(length(hilo2013[,1])/2),],  aes(x = date, y = as.numeric(cms))) + 
-  geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="purple1") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="cyan4")
-
-print(R2013.1 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
-
-R2013.2 <- ggplot(hilo2013[(length(hilo2013[,1])/2):length(hilo2013[,1]),],  aes(x = date, y = as.numeric(cms))) + 
-  geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="purple1") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="cyan4")
-
-print(R2013.2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
-
-R2013.2+ylim(0,40)
-R2013.1+ylim(0,40)
+# R2013.1 <- ggplot(hilo2013[1:(length(hilo2013[,1])/2),],  aes(x = date, y = as.numeric(cms))) + 
+#   geom_line(color="black")+
+#   geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+#   geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+#   geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+# print(R2013.1 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+# R2013.1+ylim(0,40)
+# 
+# 
+# R2013.2 <- ggplot(hilo2013[(length(hilo2013[,1])/2):length(hilo2013[,1]),],  aes(x = date, y = as.numeric(cms))) + 
+#   geom_line(color="black")+
+#   geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+#   geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+#   geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+# print(R2013.2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+# R2013.2+ylim(0,40)
 ```
-#### the whole year
-```{r}
 
-R2013 <- ggplot(hilo2013,  aes(x = date, y = as.numeric(cms))) + 
-  geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
-
-print(R2013 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
-```
-# 2014
+# 2014 Data & Plot
 ```{r}
 # Max river flow in the overall data set
 max(as.numeric(hilo2014$cms))
@@ -326,38 +327,34 @@ max(as.numeric(hilomodified$cms))
 which(as.numeric(hilo2014$cms) == max(as.numeric(hilo2014$cms)))
 
 hilo2014[5263,]
-```
 
-
-```{r}
 R2014 <- ggplot(hilo2014,  aes(x = date, y = as.numeric(logcms))) + 
   geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
 
-print(R2014 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+print(R2014 + ggtitle("2014")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 
-# 2015
+
+# 2015 Data & Plot
 ```{r}
 max(as.numeric(hilo2015$cms))
 
 which(as.numeric(hilo2015$cms) == max(as.numeric(hilo2015$cms)))
 
 hilo2015[6475,]
-```
 
-```{r}
 R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) + 
   geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
 
-print(R2015 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
-
+# Separating the Data by Storm Events
 ```{r}
 outcomes <- as.numeric(hilomodified$saltppt)<25 
 index.lt25 <- which(outcomes==TRUE)
@@ -385,6 +382,7 @@ storm.1.7.13 <- ggplot(hilomodified[145:168,],  aes(x = date, y = as.numeric(cms
 
 print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
+
 
 
 
