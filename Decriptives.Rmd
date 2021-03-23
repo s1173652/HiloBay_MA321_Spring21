@@ -354,6 +354,7 @@ R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) +
 
 print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
+
 # Separating the Data by Storm Events
 ```{r}
 outcomes <- as.numeric(hilomodified$saltppt)<25 
@@ -383,7 +384,13 @@ storm.1.7.13 <- ggplot(hilomodified[145:168,],  aes(x = date, y = as.numeric(cms
 print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
 
+# Trying to make the Rainfall plot easier to read
 
+```{r}
+RiverFlow1 <- ggplot(hilomodified[1:100,],  aes(x = date, y = as.numeric(cms))) + 
+  geom_line()
 
+print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
 
 
