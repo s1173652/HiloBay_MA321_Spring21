@@ -3,16 +3,30 @@ title: "Data Cleaning & Descriptives"
 author: "Brianna Cirillo & Odalys Barrientos"
 output: html_notebook
 ---
+# Libraries
+```{r}
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(Amelia)
+library(lubridate)
+library(xts)
+library(openair)
+library(tidyr)
+library(gganimate)
+```
+
 # Matching the bouy data to the other data collected 
 ```{r}
 hilo <- hbb_wku_h_xts
-hilo <- data.frame(date=index(hilo), coredata(hilo))
+hilo <- data.frame(date = index(hilo), coredata(hilo))
 hilo <- hilo[529:54816,]
 hilo
 # which(hilo$date=="2010-10-23 00:00:00") = index 529 
 
 # which(hilo$date=="2016-12-31 23:00:00") = index 54816
 ```
+
 ```{r}
 length(hilo[,1]) # we are left with 54288 lines of data
 
@@ -375,11 +389,9 @@ R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) +
 
 print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
-<<<<<<< Updated upstream
+
 
 # Separating the Data by Storm Events
-=======
-# Separating the Data by Storm
 >>>>>>> Stashed changes
 ```{r}
 outcomes <- as.numeric(hilomodified$saltppt)<25 # Created a vector of True and False values where salinity is greater than 25
@@ -418,7 +430,6 @@ print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 RiverFlow1 <- ggplot(hilomodified[1:100,],  aes(x = date, y = as.numeric(cms))) + 
   geom_line()
 
-<<<<<<< Updated upstream
 print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 =======
@@ -477,7 +488,6 @@ storms
 ```
 
 ```{r}
-
 vector <- vector()
 for(i in 1:length(storms)){
   if(isTRUE(abs(storms[i]-storms[i+1]) > 10)){
@@ -490,7 +500,8 @@ for(i in 1:length(storms)){
   }
 }
 vector[which(is.na(vector)==FALSE)]
->>>>>>> Stashed changes
+
+
 
 storm.1.7.13 <- ggplot(hilomodified[1:80,],  aes(x = date, y = as.numeric(cms))) +
   geom_line(color="black")+
@@ -523,15 +534,19 @@ while (i <= length(change.vector)) {
 end <- which(is.na(endaxis)==FALSE)
 
 
-storm.1.7.13 <- ggplot(hilomodified[begin,],  aes(x = date, y = as.numeric(cms))) + 
+storms <- ggplot(hilomodified[begin,],  aes(x = date, y = as.numeric(cms))) + 
   geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
+  geom_line(aes(y = as.numeric(saltppt)), color = "red") +
   geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
   geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
 
-print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
+print(storms + ggtitle("Storms")+labs(x="Time"))
 
-storm.1.7.13 <- ggplot(hilomodified[end,],  aes(x = date, y = as.numeric(cms))) + 
+```
+
+```{r}
+
+storm.1.7.13 <- ggplot(hilomodified[1000:1500,],  aes(x = date, y = as.numeric(cms))) + 
   geom_line(color="black")+
   geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
   geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
