@@ -238,7 +238,7 @@ print(TempMod + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen
 
 ## River Flow MODIFIED
 ```{r}
-hist(as.numeric(hilomodified$cms), main = "Histogram of Log River Flow", xlab = "Log River Flow", breaks =50, xlim = c(0,200))
+hist(as.numeric(hilomodified$cms), main = "Histogram of Log River Flow", xlab = "Log River Flow", breaks =90, xlim = c(0,100))
 
 # this looks okay
 ```
@@ -375,12 +375,12 @@ R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) +
 
 print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
-<<<<<<< Updated upstream
+
 
 # Separating the Data by Storm Events
 =======
 # Separating the Data by Storm
->>>>>>> Stashed changes
+
 ```{r}
 outcomes <- as.numeric(hilomodified$saltppt)<25 
 index.lt25 <- which(outcomes==TRUE)
@@ -416,13 +416,48 @@ print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 RiverFlow1 <- ggplot(hilomodified[1:100,],  aes(x = date, y = as.numeric(cms))) + 
   geom_line()
 
-<<<<<<< Updated upstream
 print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
 ```
 =======
 ```{r}
 getwd()
 # write.csv(hilomodified,file="HiloBayNEW13to15.csv", row.names = FALSE)
+
+```
+
+# NEW Change in River Flow Column 
+
+```{r}
+pos.neg <- as.numeric(hilomodified$cms) - 10
+
+start <- vector()
+end <- vector()
+
+for(i in 1:length(pos.neg)){
+  if(isTRUE(pos.neg[i] < 0 && pos.neg[i+1] > 0)){
+    start[i] <- i
+  }else if(isTRUE(pos.neg[i] > 0 && pos.neg[i+1] < 0)){
+    end[i] <- i
+    }
+}
+start
+start<-start[!is.na(start)]
+length(start)
+end
+end<-end[!is.na(end)]
+length(end)
+```
+
+
+```{r}
+for(i in 1:length(start)){
+  storm <- ggplot(hilomodified[(start[i]-24):(end[i]+24),],  aes(x = date, y = as.numeric(cms))) +
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(storm + ggtitle("Storm 1/7/13")+labs(x="Time"))
+}
 
 ```
 
@@ -455,10 +490,10 @@ index <- vector()
 
 for(i in 1:length(hilomodified$cms)){
   if (hilomodified$changeCMS[i] < 0 ){
-    positive.change[i] <- i
+    negative.change[i] <- i
   }else{
     if(hilomodified$changeCMS[i] > 0){
-      negative.change[i] <- i
+      postive.change[i] <- i
     }
   }
   if(hilomodified$cms[i] >= 10 ){
@@ -472,6 +507,17 @@ length(which(index > 0))
 
 storms <- sort(c(positive.change,negative.change), decreasing = FALSE)
 storms
+hilostorms <- hilomodified[storms,]
+hilostorms
+```
+
+```{r}
+storm <- ggplot(hilostorms[50:250,],  aes(x = date, y = as.numeric(cms))) +
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+
+print(storm + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
 
 ```{r}
@@ -488,7 +534,6 @@ for(i in 1:length(storms)){
   }
 }
 vector[which(is.na(vector)==FALSE)]
->>>>>>> Stashed changes
 
 storm.1.7.13 <- ggplot(hilomodified[1:80,],  aes(x = date, y = as.numeric(cms))) +
   geom_line(color="black")+
@@ -523,19 +568,11 @@ end <- which(is.na(endaxis)==FALSE)
 
 storm.1.7.13 <- ggplot(hilomodified[begin,],  aes(x = date, y = as.numeric(cms))) + 
   geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
   geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
   geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
 
 print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 
-storm.1.7.13 <- ggplot(hilomodified[end,],  aes(x = date, y = as.numeric(cms))) + 
-  geom_line(color="black")+
-  geom_line(aes(y = as.numeric(saltppt)), color = "lightsteelblue1") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
-
-print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
 
 ```{r}
