@@ -357,20 +357,22 @@ print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per 
 
 # Separating the Data by Storm Events
 ```{r}
-outcomes <- as.numeric(hilomodified$saltppt)<25 
+outcomes <- as.numeric(hilomodified$saltppt)<25 # Created a vector of True and False values where salinity is greater than 25
 index.lt25 <- which(outcomes==TRUE)
-
+# Created a vector of the index number where this was true
 poss.storms <- hilomodified[index.lt25,]
 poss.storms
+# Put the rows from hilomodified that made this true into a new data frame
 ```
 
 ```{r}
 outcomes.35 <- as.numeric(hilomodified$saltppt)<35 
+# Created a vector of True and False values where salinity is greater than 35
 index.lt35 <- which(outcomes==TRUE)
-index.lt25
-poss.storms35 <- hilomodified[index.lt25,]
+# Created a vector of the index number where this was true
+poss.storms35 <- hilomodified[index.lt35,]
 poss.storms35
-
+# Put the rows from hilomodified that made this true into a new data frame
 hilomodified$date[16]
 ```
 
@@ -394,3 +396,12 @@ print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic m
 ```
 
 
+# Dickey-Fuller Test
+
+```{r}
+#install.packages("tseries")
+#library(tseries)
+adf.test(hilomodified$cms, alternative = "stationary", k = 0)
+
+```
+ 
