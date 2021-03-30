@@ -428,23 +428,27 @@ getwd()
 # NEW Change in River Flow Column 
 
 ```{r}
-pos.neg <- as.numeric(hilomodified$cms) - 10
+# any value greater than or equal to 10 cms indicates a storm
+pos.neg <- as.numeric(hilomodified$cms) - 10 
 
 start <- vector()
 end <- vector()
 
 for(i in 1:length(pos.neg)){
-  if(isTRUE(pos.neg[i] < 0 && pos.neg[i+1] > 0)){
+  if(isTRUE(pos.neg[i] < 0 && pos.neg[i+1] > 0)){ 
+    # if goes from + to - then this is the beginning of a storm
     start[i] <- i
   }else if(isTRUE(pos.neg[i] > 0 && pos.neg[i+1] < 0)){
+    # if goes from - to + then this is the end of the storm
     end[i] <- i
     }
 }
+start<-start[!is.na(start)] # removing NA
 start
-start<-start[!is.na(start)]
-length(start)
-end
+length(start) # make sure both start and end are the same length 
+
 end<-end[!is.na(end)]
+end
 length(end)
 ```
 
