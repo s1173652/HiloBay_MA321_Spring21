@@ -453,14 +453,17 @@ length(end)
 for(i in 1:length(start)){
   storm <- ggplot(hilomodified[(start[i]-24):(end[i]+24),],  aes(x = date, y = as.numeric(cms))) +
   geom_line(color="black")+
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="grey69") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="khaki")
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="green") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue") +
+  geom_line(aes(y = as.numeric(saltppt)),color="red") +
+  geom_line(aes(y = as.numeric(TempC)),color="purple") +
+  geom_line(aes(y = as.numeric(Doper)),color="orange")
 
-print(storm + ggtitle("Storm 1/7/13")+labs(x="Time"))
+  print(storm + ggtitle("Storms")+labs(x="Time"))
 }
 
 ```
-
+ 
 ```{r}
 ChangeRF <- function(x = vector()){
 change <- c(0)
