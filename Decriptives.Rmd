@@ -3,6 +3,20 @@ title: "Data Cleaning & Descriptives"
 author: "Brianna Cirillo & Odalys Barrientos"
 output: html_notebook
 ---
+
+# Libraries
+```{r}
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(Amelia)
+library(lubridate)
+library(xts)
+library(openair)
+library(tidyr)
+library(gganimate)
+```
+
 # Matching the bouy data to the other data collected 
 ```{r}
 hilo <- hbb_wku_h_xts
@@ -464,7 +478,6 @@ for(i in 1:length(start)){
   geom_line(aes(y = as.numeric(Doper)),color="orange")
 
   print(storm + ggtitle("Storms")+labs(x="Time"))
-  par(mfrow=c(9,8))
 }
 
 ```
