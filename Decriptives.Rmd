@@ -464,6 +464,7 @@ for(i in 1:length(start)){
   geom_line(aes(y = as.numeric(Doper)),color="orange")
 
   print(storm + ggtitle("Storms")+labs(x="Time"))
+  par(mfrow=c(9,8))
 }
 
 ```
