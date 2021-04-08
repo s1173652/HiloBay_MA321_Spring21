@@ -484,39 +484,98 @@ range01 <- function(x, na.rm = TRUE) {
 ```
 
 # using base R
-```{r}
+```{r,fig.height=20}
+num <- c(1:length(start))
+graphics.off()
+
 for(i in 1:length(start)){
-index <- c((start[i]-24):(end[i]+24))
+#for(i in c(1)){
+  
+jpeg(sprintf("storm-%s.jpeg", num[i]),width=2000, height = 1000)
+  
+index <- c(start[i]:(end[i]+24))
 
 date <- c(hilomodified$date[index])
-enddate <- hilomodified$date[end[i]+24]
+enddate <- hilomodified$date[end[i]+24]-10
 endcms <- as.numeric(hilomodified$cms[end[i]+24])
-endchl <- range01(as.numeric(hilomodified$cms[end[i]+24]))
-endturb <- as.numeric(hilomodified$cms[end[i]+24])
-endsalt <- as.numeric(hilomodified$cms[end[i]+24])
-endtemp <- as.numeric(hilomodified$cms[end[i]+24])
-endDO <- as.numeric(hilomodified$cms[end[i]+24])
+endchl <- as.numeric(hilomodified$ChlRFU[end[i]+24])
+endturb <- as.numeric(hilomodified$Corr.NTU[end[i]+24])
+endsalt <- as.numeric(hilomodified$saltppt[end[i]+24])
+endtemp <- as.numeric(hilomodified$TempC[end[i]+24])
+endDO <- as.numeric(hilomodified$Doper[end[i]+24])
 
-par(mar = c(5, 4, 4, 4) + 0.3) # Additional space for second y-axis
-plot(x = date,y = as.numeric(hilomodified$cms[index]), type = "l",lwd=2, col="black", xlab="Time") # Create first plot for River Flow
 
-par(new = TRUE) # Add new plot
-plot(x = date ,y = range01(as.numeric(hilomodified$ChlRFU[index])),axes = FALSE, type = "l",lwd=2, col="blue", ylab = "Time")  # Create second plot without axes
-lines(x = date ,y = range01(as.numeric(hilomodified$Corr.NTU[index])), type = "l",lwd=2, col="red")
-lines(x = date ,y = range01(as.numeric(hilomodified$saltppt[index])), type = "l",lwd=2, col="green")
-lines(x = date ,y = range01(as.numeric(hilomodified$TempC[index])), type = "l",lwd=2, col="orange")
-lines(x = date ,y = range01(as.numeric(hilomodified$Doper[index])), type = "l",lwd=2, col="purple")
-axis(side = 4)   # Add second axis
-#mtext("y2", side = 4, line = 3) # Add second axis label
+par(mfrow=c(6,1)) 
+# RIVER FLOW
+plot(x = date,y = as.numeric(hilomodified$cms[index]), type = "l",lwd=2, col="black", xlab="Time", ylab="River Flow cms", cex.lab = 1.5) # Create first plot for River Flow
+text(x= enddate, y = endcms, col = "black", adj=1, cex=3, label= "River Flow")
 
-text(x= enddate, y = endcms, col = "black", adj=1, cex=0.85, label= "River Flow")
-text(x= enddate, y = endchl, col = "blue", adj=1, cex=0.85, label= "CHL")
-text(x= enddate, y = endturb, col = "red", adj=1, cex=0.85, label= "TURB")
-text(x= enddate, y = endsalt, col = "green", adj=1, cex=0.85, label= "Salinity")
-text(x= enddate, y = endtemp, col = "orange", adj=1, cex=0.85, label= "TEMP")
-text(x= enddate, y = endDO, col = "purple", adj=1, cex=0.85, label= "DIS")
+# CHLOROPHYLL
+if(sum(is.na(as.numeric(hilomodified$ChlRFU[index])))==length(hilomodified$ChlRFU[index])){
+  plot(x = 0 ,y = 0, type = "l",lwd=2, col="blue", xlab= "Time", ylab = "Chlorophyll  - relative fluorescence units (RFU)", cex.lab = 1.5)
+text(x = 0, y = 0, col = "blue", adj=1, cex=3, label= "Chlorophyll")
+}else{
+plot(x = date ,y = as.numeric(hilomodified$ChlRFU[index]), type = "l",lwd=2, col="blue", xlab= "Time", ylab = "Chlorophyll  - relative fluorescence units (RFU)", cex.lab = 1.5)
+text(x = enddate, y = endchl, col = "blue", adj=1, cex=3, label= "Chlorophyll")
 }
+
+# TURBIDITY
+if(sum(is.na(as.numeric(hilomodified$Corr.NTU[index])))==length(hilomodified$Corr.NTU[index])){
+  plot(x = 0 ,y = 0, type = "l",lwd=2, col="red", xlab= "Time", ylab = "Turbidity - Nephelometric Turbidity Units (NTU)", cex.lab = 1.5)
+text(x = 0, y = 0, col = "red", adj=1, cex=3, label= "Turbidity")
+}else{
+plot(x = date ,y = as.numeric(hilomodified$Corr.NTU[index]), type = "l",lwd=2, col="red", xlab= "Time", ylab = "Turbidity - Nephelometric Turbidity Units (NTU)", cex.lab = 1.5)
+text(x = enddate, y = endturb, col = "red", adj=1, cex=3, label= "Turbidity")
+}
+
+# SALINITY
+if(sum(is.na(as.numeric(hilomodified$saltppt[index])))==length(hilomodified$saltppt[index])){
+  plot(x = 0 ,y = 0, type = "l",lwd=2, col="green", xlab= "Time", ylab = "Salinity - unit parts per thousand (PPT)", cex.lab = 1.5)
+text(x = 0, y = 0, col = "green", adj=1, cex=3, label= "Salinity")
+}else{
+plot(x = date ,y = as.numeric(hilomodified$saltppt[index]), type = "l",lwd=2, col="green", xlab= "Time", ylab = "Salinity - unit parts per thousand (PPT)", cex.lab = 1.5)
+text(x = enddate, y = endsalt, col = "green", adj=1, cex=3, label= "Salinity")
+}
+
+# TEMPERATURE
+if(sum(is.na(as.numeric(hilomodified$TempC[index])))==length(hilomodified$TempC[index])){
+  plot(x = 0 ,y = 0, type = "l",lwd=2, col="orange", xlab= "Time", ylab = "Temperature - Celsius", cex.lab = 1.5)
+text(x = 0, y = 0, col = "orange", adj=1, cex=3, label= "Temperature")
+}else{
+plot(x = date ,y = as.numeric(hilomodified$TempC[index]), type = "l",lwd=2, col="orange", xlab= "Time", ylab = "Temperature - Celsius", cex.lab = 1.5)
+text(x = enddate, y = endtemp, col = "orange", adj=1, cex=3, label= "Temperature")
+}
+
+# DISSOLVED OXYGEN
+if(sum(is.na(as.numeric(hilomodified$Doper[index])))==length(hilomodified$Doper[index])){
+  plot(x = 0 ,y = 0, type = "l",lwd=2, col="purple", xlab= "Time", ylab = "Dissolved Oxygen in percent of saturation", cex.lab = 1.5)
+text(x = 0, y = 0, col = "purple", adj=1, cex=3, label= "Dissolved Oxygen")
+}else{
+plot(x = date ,y = as.numeric(hilomodified$Doper[index]), type = "l",lwd=2, col="purple", xlab= "Time", ylab = "Dissolved Oxygen in percent of saturation", cex.lab = 1.5)
+text(x = enddate, y = endDO, col = "purple", adj=1, cex=3, label= "Dissolved Oxygen")
+}
+
+dev.off()
+}
+
 ```
  
 
+```{r}
+for(i in 1:length(start)){
+#for(i in c(1)){
+index <- c((start[i]-24):(end[i]+24))
+
+DO <- as.numeric(hilomodified$Doper[index])
+
+show(DO)
+#plot(x = date ,y = as.numeric(hilomodified$Doper[index]), type = "l",lwd=2, col="purple", xlab= "Time", ylab = "Dissolved Oxygen in percent of saturation", cex.lab = 5)
+#text(x = enddate, y = endDO, col = "purple", adj=1, cex=9, label= "Dissolved Oxygen")
+}
+TRUE+TRUE
+```
+
+```{r}
+sprintf("storm-%s",1 )
+```
 
