@@ -585,3 +585,33 @@ TRUE+TRUE
 sprintf("storm-%s",1 )
 ```
 
+
+# ============================= Dickey Fuller Test ===============================
+
+```{r}
+library(tseries)
+adf.test(hilo2015.fixed$cms, alternative= "stationary")
+adf.test(hilo2015.fixed$ChlRFU, alternative= "stationary")
+adf.test(hilo2015.fixed$Doper, alternative= "stationary")
+adf.test(hilo2015.fixed$saltppt, alternative= "stationary")
+adf.test(hilo2015.fixed$TempC, alternative= "stationary")
+adf.test(hilo2015.fixed$Corr.NTU, alternative= "stationary")
+```
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
