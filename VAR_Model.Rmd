@@ -26,23 +26,38 @@ hilo2015[is.na(hilo2015)] <- 0
 sum(is.na(hilo2015))
 
 # Saving as numeric vectors
-riverflow <- as.numeric(hilo2015$cms)
-chlorophyll <- as.numeric(hilo2015$ChlRF)
-dissolved_o2 <- as.numeric(hilo2015$Doper)
-salinity <- as.numeric(hilo2015$saltppt)
-temp <- as.numeric(hilo2015$TempC)
-turbidity <- as.numeric(hilo2015$Corr.NTU)
+riverflow <- as.numeric(hilo2015.fixed$cms)
+chlorophyll <- as.numeric(hilo2015.fixed$ChlRF)
+dissolved_o2 <- as.numeric(hilo2015.fixed$Doper)
+salinity <- as.numeric(hilo2015.fixed$saltppt)
+temp <- as.numeric(hilo2015.fixed$TempC)
+turbidity <- as.numeric(hilo2015.fixed$Corr.NTU)
 
 #creates a vector of response variables
-h = cbind(riverflow, chlorophyll, dissolved_o2, salinity, temp, turbidity) 
-# hilo2015$saltppt, hilo2015$TempC, hilo2015$Corr.NTU
+h_chlorophyll <-  cbind(riverflow, chlorophyll)
+h_dissolvedo2 <- cbind(riverflow, dissolved_o2)
+h_salinity <- cbind(riverflow, salinity)
+h_temp <- cbind(riverflow, temp)
+h_turbidity <- cbind(riverflow, turbidity)
 
 #VAR command does estimation of AR models using ordinary least squares while simultaneously fitting the trend, intercept, and ARIMA model
 plot.ts(h , main = "", xlab = "")
-fitvar1= VAR(h, p=1, type="both")
-summary(fitvar1)
-```
+fitvar1_chlorophyll= VAR(h_chlorophyll, p=1, type="both")
+summary(fitvar1_chlorophyll)
 
+fitvar1_dissolvedo2= VAR(h_dissolvedo2, p=1, type="both")
+summary(fitvar1_dissolvedo2)
+
+fitvar1_salinity= VAR(h_salinity, p=1, type="both")
+summary(fitvar1_salinity)
+
+fitvar1_temp= VAR(h_temp, p=1, type="both")
+summary(fitvar1_temp)
+
+fitvar1_turbidity= VAR(h_turbidity, p=1, type="both")
+summary(fitvar1_turbidity)
+```
+  
 ```{r}
 # 2nd Lag
 fitvar2 = VAR(h, p=2, type="both")
@@ -93,9 +108,19 @@ plot(cmstemp)
 ```
 
 ```{r}
+#install.packages("smooth")
+library(smooth)
 hilo2015$logcms <- NULL
 hilo2015$chlcal <- NULL
 hilo2015$ChlRF <- NULL
+which(is.na(hilo2015))
+var.hilo2015 <- hilo2015[-c(which(is.na(hilo2015))),]  
+sum(is.na(var.hilo2015))
+hilo2015 <- na.omit(hilo2015)
+sum(is.na(var.hilo2015))
+
+hilo2015.fixed <- na.omit(hilo2015)
+sum(is.na(hilo2015.fixed))
 ```
 
  
