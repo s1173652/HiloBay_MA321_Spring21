@@ -5,13 +5,19 @@ output: html_notebook
 ---
 # Matching the bouy data to the other data collected 
 ```{r}
-hilo <- hbb_wku_h_xts
-hilo <- data.frame(date=index(hilo), coredata(hilo))
-hilo <- hilo[529:54816,]
-hilo
+# hilo <- hbb_wku_h_xts
+# hilo <- data.frame(date=index(hilo), coredata(hilo))
+# hilo <- hilo[529:54816,]
+# hilo
+# getwd()
+#write.csv(hilo,"/Users/odalysbar/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/HiloData.csv", row.names = FALSE)
 # which(hilo$date=="2010-10-23 00:00:00") = index 529 
 
 # which(hilo$date=="2016-12-31 23:00:00") = index 54816
+
+library(readr)
+HiloData <- read_csv("HiloData.csv")
+#View(HiloData)
 ```
 ```{r}
 length(hilo[,1]) # we are left with 54288 lines of data
