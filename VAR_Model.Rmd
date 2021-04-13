@@ -26,12 +26,12 @@ hilo2015[is.na(hilo2015)] <- 0
 sum(is.na(hilo2015))
 
 # Saving as numeric vectors
-riverflow <- as.numeric(hilo2015.fixed$cms)
-chlorophyll <- as.numeric(hilo2015.fixed$ChlRF)
-dissolved_o2 <- as.numeric(hilo2015.fixed$Doper)
-salinity <- as.numeric(hilo2015.fixed$saltppt)
-temp <- as.numeric(hilo2015.fixed$TempC)
-turbidity <- as.numeric(hilo2015.fixed$Corr.NTU)
+riverflow <- as.numeric(hilo2015$cms)
+chlorophyll <- as.numeric(hilo2015$ChlRF)
+dissolved_o2 <- as.numeric(hilo2015$Doper)
+salinity <- as.numeric(hilo2015$saltppt)
+temp <- as.numeric(hilo2015$TempC)
+turbidity <- as.numeric(hilo2015$Corr.NTU)
 
 #creates a vector of response variables
 h_chlorophyll <-  cbind(riverflow, chlorophyll)
@@ -41,7 +41,7 @@ h_temp <- cbind(riverflow, temp)
 h_turbidity <- cbind(riverflow, turbidity)
 
 #VAR command does estimation of AR models using ordinary least squares while simultaneously fitting the trend, intercept, and ARIMA model
-plot.ts(h , main = "", xlab = "")
+#plot.ts(h , main = "", xlab = "")
 fitvar1_chlorophyll= VAR(h_chlorophyll, p=1, type="both")
 summary(fitvar1_chlorophyll)
 
@@ -58,22 +58,28 @@ fitvar1_turbidity= VAR(h_turbidity, p=1, type="both")
 summary(fitvar1_turbidity)
 ```
   
+
 ```{r}
 # 2nd Lag
-fitvar2 = VAR(h, p=2, type="both")
-summary(fitvar2)
+fitvar2.salt = VAR(h_salinity, p=2, type="both")
+summary(fitvar2.salt)
 ```
 
 
 ```{r}
 # Ask about what this is
 
-acf(residuals(fitvar2)[,1], plot = FALSE)
-acf(residuals(fitvar2)[,2])
-acf(residuals(fitvar2)[,3])
-acf(residuals(fitvar2)[,4])
-acf(residuals(fitvar2)[,5])
-acf(residuals(fitvar2)[,6])
+acf(residuals(fitvar2.salt)[,1], plot = FALSE)
+acf(residuals(fitvar2.salt)[,1], plot = TRUE, ylim=c(0,0.15))
+# acf(residuals(fitvar2)[,2])
+# acf(residuals(fitvar2)[,3])
+# acf(residuals(fitvar2)[,4])
+# acf(residuals(fitvar2)[,5])
+# acf(residuals(fitvar2)[,6])
+?acf
+
+
+2/sqrt(length(salinity))
 ```
 
 ```{r}
