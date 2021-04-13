@@ -11,6 +11,9 @@ output: html_notebook
 library(vars)
 library(astsa)
 
+hilo2015.fixed <- na.omit(hilo2015)
+sum(is.na(hilo2015.fixed))
+
 #creates a vector of response variables
 x = cbind(cmort, tempr, part) 
 
@@ -60,10 +63,39 @@ summary(fitvar1_turbidity)
   
 ```{r}
 # 2nd Lag
-fitvar2 = VAR(h, p=2, type="both")
-summary(fitvar2)
+fitvar2_chlorophyll= VAR(h_chlorophyll, p=2, type="both")
+summary(fitvar2_chlorophyll)
+
+fitvar2_dissolvedo2= VAR(h_dissolvedo2, p=2, type="both")
+summary(fitvar2_dissolvedo2)
+
+fitvar2_salinity= VAR(h_salinity, p=2, type="both")
+summary(fitvar2_salinity)
+
+fitvar2_temp= VAR(h_temp, p=2, type="both")
+summary(fitvar2_temp)
+
+fitvar2_turbidity= VAR(h_turbidity, p=2, type="both")
+summary(fitvar2_turbidity)
 ```
 
+```{r}
+# 3rd Lag
+fitvar3_chlorophyll= VAR(h_chlorophyll, p=3, type="both")
+summary(fitvar3_chlorophyll)
+
+fitvar3_dissolvedo2= VAR(h_dissolvedo2, p=3, type="both")
+summary(fitvar3_dissolvedo2)
+
+fitvar3_salinity= VAR(h_salinity, p=3, type="both")
+summary(fitvar3_salinity)
+
+fitvar3_temp= VAR(h_temp, p=3, type="both")
+summary(fitvar3_temp)
+
+fitvar3_turbidity= VAR(h_turbidity, p=3, type="both")
+summary(fitvar3_turbidity)
+```
 
 ```{r}
 # Ask about what this is
@@ -127,6 +159,9 @@ sum(is.na(hilo2015.fixed))
 
 
 
+```{r}
+#corr.gram ??
+```
 
 
 
