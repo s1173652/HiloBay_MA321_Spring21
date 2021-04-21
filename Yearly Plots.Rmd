@@ -1,0 +1,163 @@
+---
+title: "Yearly Descriptives"
+author: "Brianna Cirillo & Odalys Barrientos"
+output: html_notebook
+---
+
+# Matching the bouy data to the other data collected 
+```{r}
+# hilo <- hbb_wku_h_xts
+# hilo <- data.frame(date=index(hilo), coredata(hilo))
+# hilo <- hilo[529:54816,]
+# hilo
+# getwd()
+#write.csv(hilo,"/Users/odalysbar/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/HiloData.csv", row.names = FALSE)
+# which(hilo$date=="2010-10-23 00:00:00") = index 529 
+
+# which(hilo$date=="2016-12-31 23:00:00") = index 54816
+
+library(readr)
+hilo <- read_csv("HiloData.csv")
+
+#View(HiloData)
+
+# removing columns that we are not using 
+hilo$date.2 <- NULL # another date column
+hilo$date.1 <- NULL # another date column
+hilo$BGARFU <- NULL # ?
+hilo$cfs <- NULL
+hilo$DOmgL <- NULL # dissolved oxygen
+#hilo$Doper <- NULL # dissolved oxygen
+hilo$PAR1 <- NULL # ?
+hilo$pH <- NULL # pH
+hilo$NTU <- NULL # a different measurement for turbitity
+hilo$DOper10 <- NULL # dissolved oxygen
+
+# start date: 2013-01-01 00:00:00
+# end date: 2015-12-31 23:00:00
+hilomodified <- hilo[19225:45504,]
+length(hilo[,1])-length(hilomodified[,1])
+# lost 28008 entries of data 
+
+length(hilomodified[,1])-528 # we are left with 25752 entries of data 
+
+head(hilomodified)
+tail(hilomodified)
+
+```
+
+==============================================================
+# Descriptives by Storm
+We are picking one storm from each year. We can indicate a storm has occurred by the extreme events in the river flow data. 
+We will not use the log (which is logbase10) in order to see the extreme events
+When salinity is below 35 this also indicates a storm has occurred. 
+
+We will break the data set by year to find the most extreme event for each year. 
+```{r}
+hilo2013 <- hilomodified[1:8760,]
+
+hilo2014 <- hilomodified[8761:17520,]
+
+hilo2015 <- hilomodified[17521:length(hilomodified[,1]),]
+```
+
+# 2013 Data & Plot
+```{r}
+# max(as.numeric(hilo2013$logcms)) # this is log base 10 
+# This is NOT the natural log
+max(as.numeric(hilo2013$cms)) # 207.186 
+which(as.numeric(hilo2013$cms) == max(as.numeric(hilo2013$cms)))
+
+hilo2013[3550,]
+# all values for this storm are NA
+
+plot2013 <- ggplot(hilo2013,  aes(x = date, y = as.numeric(cms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+
+print(plot2013 + ggtitle("2013")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
+
+#### Split 2013 into 6 months to get a better visual
+```{r}
+# R2013.1 <- ggplot(hilo2013[1:(length(hilo2013[,1])/2),],  aes(x = date, y = as.numeric(cms))) + 
+#   geom_line(color="black")+
+#   geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+#   geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+#   geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+# print(R2013.1 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+# R2013.1+ylim(0,40)
+# 
+# 
+# R2013.2 <- ggplot(hilo2013[(length(hilo2013[,1])/2):length(hilo2013[,1]),],  aes(x = date, y = as.numeric(cms))) + 
+#   geom_line(color="black")+
+#   geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+#   geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+#   geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+# print(R2013.2 + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+# R2013.2+ylim(0,40)
+```
+
+# 2014 Data & Plot
+```{r}
+# Max river flow in the overall data set
+max(as.numeric(hilo2014$cms))
+max(as.numeric(hilomodified$cms))
+
+which(as.numeric(hilo2014$cms) == max(as.numeric(hilo2014$cms)))
+
+hilo2014[5263,]
+
+R2014 <- ggplot(hilo2014,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+
+print(R2014 + ggtitle("2014")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
+
+
+# 2015 Data & Plot
+```{r}
+max(as.numeric(hilo2015$cms))
+
+which(as.numeric(hilo2015$cms) == max(as.numeric(hilo2015$cms)))
+
+hilo2015[6475,]
+library(ggplot2)
+
+R2015 <- ggplot(hilo2015,  aes(x = date, y = as.numeric(logcms))) + 
+  geom_line(color="black")+
+  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
+  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
+  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+
+print(R2015 + ggtitle("2015")+labs(x="Time", y = "River Flow - cubic meters per second"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
