@@ -1,0 +1,154 @@
+---
+title: "2013-2015 Descriptives"
+author: "Brianna Cirillo & Odalys Barrientos"
+output: html_notebook
+---
+
+# NEW DATA SET-Modified Data 2013-2015
+```{r}
+library(mosaic)
+library(ggplot2)
+library(readr)
+
+ 
+hilomodified <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloModified13-15.csv")
+
+# start date: 2013-01-01 00:00:00
+# end date: 2015-12-31 23:00:00
+
+head(hilomodified)
+tail(hilomodified)
+
+```
+
+# Descriptives on all variables MODIFIED DATA SET
+## River Flow MODIFIED
+```{r}
+length(hilomodified$logcms[which(is.na(hilomodified$logcms)==TRUE)]) # No NAs, YAY!
+
+
+RiverFlowMod <- ggplot(hilomodified,  aes(x = date, y = cms)) + 
+  geom_line()
+
+print(RiverFlowMod + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+favstats(hilomodified$cms)
+```
+## CHL MODIFIED
+```{r}
+sum(is.na(hilomodified$ChlRFU)==TRUE) # 1884 NAs
+
+CHLMod <- ggplot(hilomodified,  aes(x = date, y = ChlRFU)) + 
+  geom_line()
+
+print(CHLMod + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+
+favstats(hilomodified$ChlRFU)
+```
+## Turbitity MODIFIED
+```{r}
+length(hilomodified$Corr.NTU[which(is.na(hilomodified$Corr.NTU)==TRUE)]) # 2704 NAs
+
+TURBMod <- ggplot(hilomodified,  aes(x = date, y = Corr.NTU)) + 
+  geom_line()
+
+print(TURBMod + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
+
+favstats(hilomodified$Corr.NTU)
+```
+## Salinity MODIFIED
+```{r}
+length(hilomodified$saltppt[which(is.na(hilomodified$saltppt)==TRUE)]) # 2267 NAs
+
+SALTMod <- ggplot(hilomodified,  aes(x = date, y = saltppt)) + 
+  geom_line()
+
+print(SALTMod + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+
+favstats(hilomodified$saltppt)
+favstats(hilomodified$TempC)
+favstats(hilomodified$Doper)
+```
+## Temperature MODIFIED
+```{r}
+length(hilomodified$TempC[which(is.na(hilomodified$TempC)==TRUE)]) # 1702 NAs
+
+TempMod <- ggplot(hilomodified,  aes(x = date, y = TempC)) + 
+  geom_line()
+
+print(TempMod + ggtitle("Temperature")+labs(x="Time", y = "Temperature - C"))
+
+
+favstats(hilomodified$TempC)
+```
+
+## Dissolved Oxygen MODIFIED
+```{r}
+length(hilomodified$Doper[which(is.na(hilomodified$Doper)==TRUE)]) # 2267 NAs
+
+DissoMod <- ggplot(hilomodified,  aes(x = date, y = Doper)) + 
+  geom_line()
+
+print(DissoMod + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen"))
+
+favstats(hilomodified$Doper)
+```
+
+===================================================
+# Histograms MODIFIED 
+
+## River Flow MODIFIED
+```{r}
+hist(hilomodified$cms, main = "Histogram of River Flow", xlab = "River Flow", breaks =90, xlim = c(0,100))
+
+# this looks okay
+```
+## CHL MODIFIED
+```{r}
+# VERY skewed
+hist(hilomodified$ChlRFU, main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
+
+# this looks better
+hist(log(hilomodified$ChlRFU), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
+```
+## Turbitity MODIFIED
+```{r}
+# VERY skewed
+hist(hilomodified$Corr.NTU, main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
+
+# this looks better
+hist(log(hilomodified$Corr.NTU), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+
+```
+## Salinity MODIFIED
+```{r}
+# skewed
+hist(hilomodified$saltppt, main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+
+```
+## Temperature MODIFIED
+```{r}
+# skewed
+hist(hilomodified$TempC, main = "Histogram of Temperature", xlab = "Temperature - C")
+
+```
+## Dissolved Oxygen MODIFIED
+```{r}
+# skewed
+hist(hilomodified$saltppt, main = "Histogram of Dissolved Oxygen", xlab = "Dissolved Oxygen")
+
+```
+=============================================================
+
+# Plot with ALL Var 2013-2015
+It is hard to see what is going on 
+```{r}
+AllYears <- ggplot(hilomodified,  aes(x = date, y = cms)) + 
+  geom_line()+
+  geom_line(aes(y =saltppt), color = "darkred") +
+  geom_line(aes(y = Corr.NTU), color="darkgreen") +
+  geom_line(aes(y=ChlRFU),color="blue")
+
+print(AllYears + ggtitle("Hilo Bay")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+```

@@ -4,7 +4,6 @@ output: html_notebook
 ---
 
 # Example
-
 ```{r}
 #install.packages("vars") 
 #install.packages("astsa") 
@@ -25,22 +24,22 @@ plot.ts(x , main = "", xlab = "")
 fitvar1= VAR(x, p=1, type="both")
 summary(fitvar1)
 ```
-
+# Data 
 ```{r}
 # Removing NAs
-#library(readr)
-#hilo <- read_csv("HiloData.csv")
+library(readr)
+hilo2015 <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/Hilo2015.csv")
+#View(Hilo2015)
 
 hilo2015.fixed <- na.omit(hilo2015)
-
-
-# Saving as numeric vectors
-riverflow <- as.numeric(hilo2015.fixed$cms)
-chlorophyll <- as.numeric(hilo2015.fixed$ChlRFU)
-dissolved_o2 <- as.numeric(hilo2015.fixed$Doper)
-salinity <- as.numeric(hilo2015.fixed$saltppt)
-temp <- as.numeric(hilo2015.fixed$TempC)
-turbidity <- as.numeric(hilo2015.fixed$Corr.NTU)
+```
+```{r}
+riverflow <- hilo2015.fixed$cms
+chlorophyll <- hilo2015.fixed$ChlRFU
+dissolved_o2 <- hilo2015.fixed$Doper
+salinity <- hilo2015.fixed$saltppt
+temp <- hilo2015.fixed$TempC
+turbidity <- hilo2015.fixed$Corr.NTU
 
 #creates a vector of response variables
 h_chlorophyll <-  cbind(riverflow, chlorophyll)
@@ -48,6 +47,11 @@ h_dissolvedo2 <- cbind(riverflow, dissolved_o2)
 h_salinity <- cbind(riverflow, salinity)
 h_temp <- cbind(riverflow, temp)
 h_turbidity <- cbind(riverflow, turbidity)
+
+```
+
+# Lag 1
+```{r}
 
 #VAR command does estimation of AR models using ordinary least squares while simultaneously fitting the trend, intercept, and ARIMA model
 #plot.ts(h , main = "", xlab = "")
@@ -68,7 +72,7 @@ fitvar1_turbidity= VAR(h_turbidity, p=1, type="both")
 summary(fitvar1_turbidity)
 ```
   
-
+# Lag 2
 ```{r}
 # 2nd Lag
 fitvar2_chlorophyll= VAR(h_chlorophyll, p=2, type="both")
@@ -87,7 +91,7 @@ fitvar2_turbidity= VAR(h_turbidity, p=2, type="both")
 summary(fitvar2_turbidity)
 ```
 
-
+# ACF from Lag 2
 ```{r}
 # Ask about what this is
 
@@ -111,6 +115,7 @@ acf(residuals(fitvar2_turbidity), ylim=c(0,0.2))
 
 ```
 
+# Lag 3
 ```{r}
 # 3nd Lag
 fitvar3_chlorophyll= VAR(h_chlorophyll, p=3, type="both")
@@ -129,6 +134,7 @@ fitvar3_turbidity= VAR(h_turbidity, p=3, type="both")
 summary(fitvar3_turbidity)
 ```
 
+# ACF from Lag 3
 ```{r}
 acf(residuals(fitvar3_salinity), plot = FALSE)
 acf(residuals(fitvar3_salinity),plot = TRUE, ylim=c(0,0.2))

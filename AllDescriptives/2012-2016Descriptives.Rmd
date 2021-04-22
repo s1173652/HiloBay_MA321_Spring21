@@ -1,0 +1,173 @@
+---
+title: "Full Data Set Descriptives"
+author: "Brianna Cirillo & Odalys Barrientos"
+output: html_notebook
+---
+
+```{r}
+library(mosaic)
+library(ggplot2)
+library(readr)
+
+hilo <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloFull-6var.csv")
+
+head(hilo) # start date 2010-10-23 00:00:00	
+tail(hilo) # end date 2016-12-31 23:00:00	
+```
+
+====================================================
+# FULL DATA SET 2010 (Oct 23) - 2016
+# Descriptives: PLots
+
+## River Flow FULL DATA SET
+```{r}
+length(hilo$cms[which(is.na(hilo$cms)==TRUE)]) # 12 NAs 
+which(is.na(hilo$cms)==TRUE) # the location of the NAs
+
+RiverFlow <- ggplot(hilo,  aes(x = date, y = cms)) + 
+  geom_line()
+
+print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+
+favstats(hilo$cms)
+```
+## CHL FULL DATA SET
+```{r}
+length(hilo$ChlRFU[which(is.na(hilo$ChlRFU)==TRUE)]) # 20464 NAs
+
+
+CHL <- ggplot(hilo,  aes(x = date, y = ChlRFU)) + 
+  geom_line()
+
+print(CHL + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+
+favstats(hilo$ChlRFU)
+```
+## Turbity FULL DATA SET
+```{r}
+length(hilo$Corr.NTU[which(is.na(hilo$Corr.NTU)==TRUE)]) #15012 NAs
+
+TURB <- ggplot(hilo,aes(x = date, y = Corr.NTU)) + 
+  geom_line()
+
+print(TURB + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
+
+favstats(hilo$Corr.NTU)
+```
+## Salinity FULL DATA SET
+```{r}
+length(hilo$saltppt[which(is.na(hilo$saltppt)==TRUE)]) #11330 NAs
+
+SALT <- ggplot(hilo,  aes(x = date, y = saltppt)) + 
+  geom_line()
+
+print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+
+favstats(hilo$saltppt)
+```
+## Tempurature FULL DATA SET
+```{r}
+length(hilo$TempC[which(is.na(hilo$TempC)==TRUE)]) # 10410 NAs
+
+TEMP <- ggplot(hilo,  aes(x = date, y = TempC)) + 
+  geom_line()
+
+print(TEMP + ggtitle("Temperature")+labs(x="Time", y = "Temperature - Celsius"))
+
+favstats(hilo$TempC)
+```
+# Dissolved Oxygen FULL DATA SET
+```{r}
+length(hilo$Doper[which(is.na(hilo$Doper)==TRUE)]) # 2267 NAs
+
+DISSO <- ggplot(hilo,  aes(x = date, y = Doper)) + 
+  geom_line()
+
+print(DISSO + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen in percent of saturation"))
+
+favstats(hilo$Doper)
+```
+
+========================================================
+# Histograms FULL DATA SET
+## River Flow Histogram
+```{r}
+hist(hilo$cms, main = "Histogram of River Flow", xlab = "River Flow", breaks = 1000, ylim= c(0,400))
+# VERYY SKEWED
+
+# this looks better
+hist(log(hilo$cms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
+```
+## CHL Histogram
+```{r}
+# VERY skewed
+hist(hilo$ChlRFU, main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
+
+# this looks better
+hist(log(hilo$ChlRFU), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
+
+```
+
+## Turbity Histogram
+```{r}
+# VERY skewed
+hist(hilo$Corr.NTU, main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
+
+# this looks better
+hist(log(hilo$Corr.NTU), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+
+```
+## Salinity Histogram
+```{r}
+# skewed
+hist(hilo$saltppt, main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+
+# this is worst!
+hist(log(hilo$saltppt), main = "Histogram of Log Salinity", xlab = "Salinity")
+
+```
+## Temp Histogram
+```{r}
+# looks good
+hist(hilo$TempC, main = "Histogram of Temperature", xlab = "Temperature - Celsius")
+```
+
+## Dissolved Oxygen Histogram
+```{r}
+# looks good 
+hist(hilo$Doper, main = "Histogram of Dissolved Oxygen", xlab = "Dissolved Oxygen in percent of saturation")
+
+```
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

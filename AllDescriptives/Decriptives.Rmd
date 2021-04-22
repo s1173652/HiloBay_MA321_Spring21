@@ -3,304 +3,331 @@ title: "Data Cleaning & Descriptives"
 author: "Brianna Cirillo & Odalys Barrientos"
 output: html_notebook
 ---
+# Libraries
+```{r}
+library(mosaic)
+library(ggplot2)
+library(readr)
+```
+
 # Matching the bouy data to the other data collected 
 ```{r}
-# hilo <- hbb_wku_h_xts
-# hilo <- data.frame(date=index(hilo), coredata(hilo))
-# hilo <- hilo[529:54816,]
-# hilo
-# getwd()
-#write.csv(hilo,"/Users/odalysbar/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/HiloData.csv", row.names = FALSE)
-# which(hilo$date=="2010-10-23 00:00:00") = index 529 
-
-# which(hilo$date=="2016-12-31 23:00:00") = index 54816
-
-library(readr)
-hilo <- read_csv("HiloData.csv")
-
-#View(HiloData)
+getwd()
+# hilo <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloData.csv")
+# 
+# head(hilo) # start date 2010-10-23 00:00:00	
+# tail(hilo) # end date 2016-12-31 23:00:00	
 ```
-
+# Removing columns we will not use in this project
 ```{r}
-length(hilo[,1]) # we are left with 54288 lines of data
+# hilo$date.2 <- NULL # another date column
+# hilo$date.1 <- NULL # another date column
+# hilo$BGARFU <- NULL # ?
+# hilo$cfs <- NULL
+# hilo$DOmgL <- NULL # dissolved oxygen
+# hilo$PAR1 <- NULL # ?
+# hilo$pH <- NULL # pH
+# hilo$NTU <- NULL # a different measurement for turbitity
+# hilo$DOper10 <- NULL # dissolved oxygen
+# hilo$logcms <- NULL # dissolved oxygen
+# hilo$chlcal <- NULL
 
-54816 - length(hilo[,1]) # we lost 528 values 
-```
+# Columns we will use
+# for some reason they were saved as characters
+# hilo$cms <- as.numeric(hilo$cms)
+# hilo$ChlRFU <- as.numeric(hilo$ChlRFU)
+# hilo$saltppt <- as.numeric(hilo$saltppt)
+# hilo$TempC <- as.numeric(hilo$TempC)
+# hilo$Corr.NTU <- as.numeric(hilo$Corr.NTU)
+# hilo$Doper <- as.numeric(hilo$Doper)
 
-# Changing column names 
-```{r}
-# removing columns that we are not using 
-hilo$date.2 <- NULL # another date column
-hilo$date.1 <- NULL # another date column
-hilo$BGARFU <- NULL # ?
-hilo$cfs <- NULL
-hilo$DOmgL <- NULL # dissolved oxygen
-#hilo$Doper <- NULL # dissolved oxygen
-hilo$PAR1 <- NULL # ?
-hilo$pH <- NULL # pH
-hilo$NTU <- NULL # a different measurement for turbitity
-hilo$DOper10 <- NULL # dissolved oxygen
+# saving this dataframe as a csv
+#write.csv(hilo,"/Users/odalysbar/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloFull-6var.csv", row.names = FALSE)
 
-# colnames(hilo) <- c("Date", "cfs", "RiverFlow-cumec", "LogRiverFlow-cumec", "Chlorophyll-RFU", "Salinity-PPT", "Temp-C", "chlorophyll-calibrator", "Turbidity-NTU")
-# does not work ???
-
-hilo
+# This is the dataframe we will be using 
+hilo <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloFull-6var.csv")
+hilo$cms <- as.numeric(hilo$cms)
+head(hilo) # start date 2010-10-23 00:00:00	
+tail(hilo) # end date 2016-12-31 23:00:00	
 ```
 
 ====================================================
-
-# FULL DATA SET 2012-2016
+# FULL DATA SET 2010 (Oct 23) - 2016
 # Descriptives: PLots
 
 ## River Flow FULL DATA SET
 ```{r}
-length(hilo$logcms[which(is.na(hilo$logcms)==TRUE)]) # 12 NAs 
-which(is.na(hilo$logcms)==TRUE)
+length(hilo$cms[which(is.na(hilo$cms)==TRUE)]) # 12 NAs 
+which(is.na(hilo$cms)==TRUE) # the location of the NAs
 
-RiverFlow <- ggplot(hilo,  aes(x = date, y = as.numeric(cms))) + 
+RiverFlow <- ggplot(hilo,  aes(x = date, y = cms)) + 
   geom_line()
 
 print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+
+favstats(hilo$cms)
 ```
 ## CHL FULL DATA SET
 ```{r}
 length(hilo$ChlRFU[which(is.na(hilo$ChlRFU)==TRUE)]) # 20464 NAs
 
-which(as.numeric(hilo$ChlRFU)==max(as.numeric(na.omit(hilo$ChlRFU)))) # 15.3 max 
-# CHL tells us where in the data set this happened  
-hilo[38974,]
 
-CHL <- ggplot(hilo,  aes(x = date, y = as.numeric(ChlRFU))) + 
+CHL <- ggplot(hilo,  aes(x = date, y = ChlRFU)) + 
   geom_line()
 
 print(CHL + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+
+favstats(hilo$ChlRFU)
 ```
 ## Turbity FULL DATA SET
 ```{r}
 length(hilo$Corr.NTU[which(is.na(hilo$Corr.NTU)==TRUE)]) #15012 NAs
 
-which(as.numeric(hilo$Corr.NTU)==max(as.numeric(na.omit(hilo$Corr.NTU)))) # 88.4
-# tells us where in the data set this happened
-hilo[33243,]
-
-TURB <- ggplot(hilo,aes(x = date, y = as.numeric(Corr.NTU))) + 
+TURB <- ggplot(hilo,aes(x = date, y = Corr.NTU)) + 
   geom_line()
 
 print(TURB + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
+
+favstats(hilo$Corr.NTU)
 ```
 ## Salinity FULL DATA SET
 ```{r}
 length(hilo$saltppt[which(is.na(hilo$saltppt)==TRUE)]) #11330 NAs
 
-SALT <- ggplot(hilo,  aes(x = date, y = as.numeric(saltppt))) + 
+SALT <- ggplot(hilo,  aes(x = date, y = saltppt)) + 
   geom_line()
 
 print(SALT + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
+
+favstats(hilo$saltppt)
+```
+## Tempurature FULL DATA SET
+```{r}
+length(hilo$TempC[which(is.na(hilo$TempC)==TRUE)]) # 10410 NAs
+
+TEMP <- ggplot(hilo,  aes(x = date, y = TempC)) + 
+  geom_line()
+
+print(TEMP + ggtitle("Temperature")+labs(x="Time", y = "Temperature - Celsius"))
+
+favstats(hilo$TempC)
+```
+# Dissolved Oxygen FULL DATA SET
+```{r}
+length(hilo$Doper[which(is.na(hilo$Doper)==TRUE)]) # 2267 NAs
+
+DISSO <- ggplot(hilo,  aes(x = date, y = Doper)) + 
+  geom_line()
+
+print(DISSO + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen in percent of saturation"))
+
+favstats(hilo$Doper)
 ```
 
 ========================================================
 # Histograms FULL DATA SET
 ## River Flow Histogram
 ```{r}
-hist(as.numeric(hilo$logcms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
+hist(hilo$cms, main = "Histogram of River Flow", xlab = "River Flow", breaks = 1000, ylim= c(0,400))
+# VERYY SKEWED
 
-# this looks okay
+# this looks better
+hist(log(hilo$cms), main = "Histogram of Log River Flow", xlab = "Log River Flow")
 ```
 ## CHL Histogram
 ```{r}
 # VERY skewed
-hist(as.numeric(hilo$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
+hist(hilo$ChlRFU, main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
 
 # this looks better
-hist(log(as.numeric(hilo$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
-# not sure what happens to units when taking the log 
+hist(log(hilo$ChlRFU), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
+
 ```
+
 ## Turbity Histogram
 ```{r}
 # VERY skewed
-hist(as.numeric(hilo$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
+hist(hilo$Corr.NTU, main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
 
 # this looks better
-hist(log(as.numeric(hilo$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
-# not sure what happens to units when taking the log 
+hist(log(hilo$Corr.NTU), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+
 ```
 ## Salinity Histogram
 ```{r}
 # skewed
-hist(as.numeric(hilo$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+hist(hilo$saltppt, main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
 
 # this is worst!
-hist(log(as.numeric(hilo$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
-# not sure what happens to units when taking the log 
+hist(log(hilo$saltppt), main = "Histogram of Log Salinity", xlab = "Salinity")
+
+```
+## Temp Histogram
+```{r}
+# looks good
+hist(hilo$TempC, main = "Histogram of Temperature", xlab = "Temperature - Celsius")
+```
+
+## Dissolved Oxygen Histogram
+```{r}
+# looks good 
+hist(hilo$Doper, main = "Histogram of Dissolved Oxygen", xlab = "Dissolved Oxygen in percent of saturation")
+
 ```
 
 =========================================================
 # NEW DATA SET-Modified Data 2013-2015
 ```{r}
+ 
+hilomodified <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloModified13-15.csv")
+
 # start date: 2013-01-01 00:00:00
 # end date: 2015-12-31 23:00:00
-hilomodified <- hilo[19225:45504,]
-length(hilo[,1])-length(hilomodified[,1])
-# lost 28008 entries of data 
-
-length(hilomodified[,1])-528 # we are left with 25752 entries of data 
-
 
 head(hilomodified)
 tail(hilomodified)
 
 ```
 
-# Descriptives on all variables MODIFIED DATA SET: Using Favstats
-## River Flow Favstats
-```{r}
-library(mosaic)
-favstats(hilomodified$cms)
-```
-## CHL Favstats
-```{r}
-favstats(hilomodified$ChlRFU)
-```
-## Turbitity Favstats
-```{r}
-favstats(hilomodified$Corr.NTU)
-```
-## Salinity Favstats
-```{r}
-favstats(hilomodified$saltppt)
-favstats(hilomodified$TempC)
-favstats(hilomodified$Doper)
-```
-
-=====================================================
-# MODIFIED DATA SET 2013-2015
-# Descriptives: Plots
-
+# Descriptives on all variables MODIFIED DATA SET
 ## River Flow MODIFIED
 ```{r}
 length(hilomodified$logcms[which(is.na(hilomodified$logcms)==TRUE)]) # No NAs, YAY!
-which(is.na(hilomodified$logcms)==TRUE)
 
-RiverFlowMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(cms))) + 
+
+RiverFlowMod <- ggplot(hilomodified,  aes(x = date, y = cms)) + 
   geom_line()
 
 print(RiverFlowMod + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
+
+favstats(hilomodified$cms)
 ```
 ## CHL MODIFIED
 ```{r}
 sum(is.na(hilomodified$ChlRFU)==TRUE) # 1884 NAs
-#which(is.na(hilomodified$ChlRFU)==TRUE)
-# max(as.numeric(na.omit(hilo$ChlRFU))) # 15.3
-which(as.numeric(hilomodified$ChlRFU)==15.3)
-hilo[38974,]
 
-CHLMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(ChlRFU))) + 
+CHLMod <- ggplot(hilomodified,  aes(x = date, y = ChlRFU)) + 
   geom_line()
 
 print(CHLMod + ggtitle("Chlorophyll ")+labs(x="Time", y = "Chlorophyll  - relative fluorescence units (RFU)"))
+
+favstats(hilomodified$ChlRFU)
 ```
-
-
-# Turbitity MODIFIED
+## Turbitity MODIFIED
 ```{r}
 length(hilomodified$Corr.NTU[which(is.na(hilomodified$Corr.NTU)==TRUE)]) # 2704 NAs
-# max(as.numeric(na.omit(hilo$Corr.NTU))) # 88.4
-which(as.numeric(hilo$Corr.NTU)==88.4)
-hilo[33243,]
 
-TURBMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(Corr.NTU))) + 
+TURBMod <- ggplot(hilomodified,  aes(x = date, y = Corr.NTU)) + 
   geom_line()
 
 print(TURBMod + ggtitle("Turbidity ")+labs(x="Time", y = "Turbidity - Nephelometric Turbidity Units (NTU)"))
-```
 
-# Salinity MODIFIED
+favstats(hilomodified$Corr.NTU)
+```
+## Salinity MODIFIED
 ```{r}
 length(hilomodified$saltppt[which(is.na(hilomodified$saltppt)==TRUE)]) # 2267 NAs
 
-SALTMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(saltppt))) + 
+SALTMod <- ggplot(hilomodified,  aes(x = date, y = saltppt)) + 
   geom_line()
 
 print(SALTMod + ggtitle("Salinity")+labs(x="Time", y = "Salinity - unit parts per thousand (PPT)"))
-```
-# Tempurature MODIFIED
-```{r}
-length(hilomodified$TempC[which(is.na(hilomodified$TempC)==TRUE)]) # 2267 NAs
 
-TempMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(TempC))) + 
+favstats(hilomodified$saltppt)
+favstats(hilomodified$TempC)
+favstats(hilomodified$Doper)
+```
+## Temperature MODIFIED
+```{r}
+length(hilomodified$TempC[which(is.na(hilomodified$TempC)==TRUE)]) # 1702 NAs
+
+TempMod <- ggplot(hilomodified,  aes(x = date, y = TempC)) + 
   geom_line()
 
-print(TempMod + ggtitle("Temperature")+labs(x="Time", y = "Temperature - Celsius"))
+print(TempMod + ggtitle("Temperature")+labs(x="Time", y = "Temperature - C"))
+
+
+favstats(hilomodified$TempC)
 ```
-# Dissolved Oxygen MODIFIED
+
+## Dissolved Oxygen MODIFIED
 ```{r}
 length(hilomodified$Doper[which(is.na(hilomodified$Doper)==TRUE)]) # 2267 NAs
 
-TempMod <- ggplot(hilomodified,  aes(x = date, y = as.numeric(Doper))) + 
+DissoMod <- ggplot(hilomodified,  aes(x = date, y = Doper)) + 
   geom_line()
 
-print(TempMod + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen in percent of saturation"))
+print(DissoMod + ggtitle("Dissolved Oxygen")+labs(x="Time", y = "Dissolved Oxygen"))
+
+favstats(hilomodified$Doper)
 ```
+
 ===================================================
 # Histograms MODIFIED 
 
 ## River Flow MODIFIED
 ```{r}
-hist(as.numeric(hilomodified$cms), main = "Histogram of Log River Flow", xlab = "Log River Flow", breaks =90, xlim = c(0,100))
+hist(hilomodified$cms, main = "Histogram of River Flow", xlab = "River Flow", breaks =90, xlim = c(0,100))
 
 # this looks okay
 ```
 ## CHL MODIFIED
 ```{r}
 # VERY skewed
-hist(as.numeric(hilomodified$ChlRFU), main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
+hist(hilomodified$ChlRFU, main = "Histogram of Chlorophyll", xlab = "Chlorophyll  - relative fluorescence units (RFU)")
 
 # this looks better
-hist(log(as.numeric(hilomodified$ChlRFU)), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
-# not sure what happens to units when taking the log 
+hist(log(hilomodified$ChlRFU), main = "Histogram of Log Chlorophyll", xlab = "Chlorophyll")
 ```
 ## Turbitity MODIFIED
 ```{r}
 # VERY skewed
-hist(as.numeric(hilomodified$Corr.NTU), main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
+hist(hilomodified$Corr.NTU, main = "Histogram of Turbidity", xlab = "Turbidity - Nephelometric Turbidity Units (NTU)")
 
 # this looks better
-hist(log(as.numeric(hilomodified$Corr.NTU)), main = "Histogram of Log Turbidity", xlab = "Turbidity")
-# not sure what happens to units when taking the log 
+hist(log(hilomodified$Corr.NTU), main = "Histogram of Log Turbidity", xlab = "Turbidity")
+
 ```
 ## Salinity MODIFIED
 ```{r}
 # skewed
-hist(as.numeric(hilomodified$saltppt), main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
+hist(hilomodified$saltppt, main = "Histogram of Salinity", xlab = "Salinity - unit parts per thousand (PPT)")
 
-# this is worst!
-hist(log(as.numeric(hilomodified$saltppt)), main = "Histogram of Log Salinity", xlab = "Salinity")
-# not sure what happens to units when taking the log 
+```
+## Temperature MODIFIED
+```{r}
+# skewed
+hist(hilomodified$TempC, main = "Histogram of Temperature", xlab = "Temperature - C")
+
+```
+## Dissolved Oxygen MODIFIED
+```{r}
+# skewed
+hist(hilomodified$saltppt, main = "Histogram of Dissolved Oxygen", xlab = "Dissolved Oxygen")
+
 ```
 =============================================================
 
 # Plot with ALL Var 2013-2015
 It is hard to see what is going on 
 ```{r}
-AllYears <- ggplot(hilomodified,  aes(x = date, y = as.numeric(logcms))) + 
+AllYears <- ggplot(hilomodified,  aes(x = date, y = cms)) + 
   geom_line()+
-  geom_line(aes(y = as.numeric(saltppt)), color = "darkred") +
-  geom_line(aes(y = as.numeric(Corr.NTU)), color="darkgreen") +
-  geom_line(aes(y=as.numeric(ChlRFU)),color="blue")
+  geom_line(aes(y =saltppt), color = "darkred") +
+  geom_line(aes(y = Corr.NTU), color="darkgreen") +
+  geom_line(aes(y=ChlRFU),color="blue")
 
 print(AllYears + ggtitle("Hilo Bay")+labs(x="Time", y = "River Flow - cubic meters per second"))
 
 ```
 
+=========================================================
 
-    
-
-
-# Separating the Data by Storm Events
-=======
-# Separating the Data by Storm
+# ATTEMPT 1: Separating the Data by Storm using SALT
 
 ```{r}
+
 outcomes <- as.numeric(hilomodified$saltppt)<25 
 index.lt25 <- which(outcomes==TRUE)
 
@@ -329,22 +356,7 @@ storm.1.7.13 <- ggplot(hilomodified[145:168,],  aes(x = date, y = as.numeric(cms
 print(storm.1.7.13 + ggtitle("Storm 1/7/13")+labs(x="Time"))
 ```
 
-# Trying to make the Rainfall plot easier to read
-
-```{r}
-RiverFlow1 <- ggplot(hilomodified[1:100,],  aes(x = date, y = as.numeric(cms))) + 
-  geom_line()
-
-print(RiverFlow + ggtitle("River Flow")+labs(x="Time", y = "River Flow - cubic meters per second"))
-```
-=======
-```{r}
-getwd()
-# write.csv(hilomodified,file="HiloBayNEW13to15.csv", row.names = FALSE)
-
-```
-
-# NEW Change in River Flow Column 
+# ATTEMPT 2: Separating the Data by Storm using CHANGE IN RIVER FLOW
 
 ```{r}
 # any value greater than or equal to 10 cms indicates a storm
@@ -371,9 +383,7 @@ end
 length(end)
 ```
 
-
 ```{r}
-library(ggplot2)
 for(i in 1:length(start)){
   # the point start[i] is the beginning of a storm
   # the point end[i] is the end of the same storm
@@ -402,6 +412,8 @@ range01 <- function(x, na.rm = TRUE) {
 }
 ```
 
+# ATTEMP 3: Separating the Data by Storm RIVER FLOW > 10cms
+WE WILL USE THIS METHOD
 # using base R
 ```{r,fig.height=20}
 #num <- c(1:length(start))
@@ -480,23 +492,6 @@ text(x = enddate, y = endDO, col = "purple", adj=1, cex=3, label= "Dissolved Oxy
 ```
  
 
-```{r}
-for(i in 1:length(start)){
-#for(i in c(1)){
-index <- c((start[i]-24):(end[i]+24))
-
-DO <- as.numeric(hilomodified$Doper[index])
-
-show(DO)
-#plot(x = date ,y = as.numeric(hilomodified$Doper[index]), type = "l",lwd=2, col="purple", xlab= "Time", ylab = "Dissolved Oxygen in percent of saturation", cex.lab = 5)
-#text(x = enddate, y = endDO, col = "purple", adj=1, cex=9, label= "Dissolved Oxygen")
-}
-TRUE+TRUE
-```
-
-```{r}
-sprintf("storm-%s",1 )
-```
 
 
 # ============================= Dickey Fuller Test ===============================

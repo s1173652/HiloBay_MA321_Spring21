@@ -4,50 +4,20 @@ author: "Brianna Cirillo & Odalys Barrientos"
 output: html_notebook
 ---
 
-# Matching the bouy data to the other data collected 
 ```{r}
-# hilo <- hbb_wku_h_xts
-# hilo <- data.frame(date=index(hilo), coredata(hilo))
-# hilo <- hilo[529:54816,]
-# hilo
-# getwd()
-#write.csv(hilo,"/Users/odalysbar/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/HiloData.csv", row.names = FALSE)
-# which(hilo$date=="2010-10-23 00:00:00") = index 529 
-
-# which(hilo$date=="2016-12-31 23:00:00") = index 54816
-
+library(mosaic)
+library(ggplot2)
 library(readr)
-hilo <- read_csv("HiloData.csv")
 
-#View(HiloData)
-
-# removing columns that we are not using 
-hilo$date.2 <- NULL # another date column
-hilo$date.1 <- NULL # another date column
-hilo$BGARFU <- NULL # ?
-hilo$cfs <- NULL
-hilo$DOmgL <- NULL # dissolved oxygen
-#hilo$Doper <- NULL # dissolved oxygen
-hilo$PAR1 <- NULL # ?
-hilo$pH <- NULL # pH
-hilo$NTU <- NULL # a different measurement for turbitity
-hilo$DOper10 <- NULL # dissolved oxygen
+hilomodified <- read_csv("~/Documents/MA321-SP21/HiloBay-Adolf/HiloBay_MA321_Spring21/NewDataframes/HiloModified13-15.csv")
 
 # start date: 2013-01-01 00:00:00
 # end date: 2015-12-31 23:00:00
-hilomodified <- hilo[19225:45504,]
-length(hilo[,1])-length(hilomodified[,1])
-# lost 28008 entries of data 
-
-length(hilomodified[,1])-528 # we are left with 25752 entries of data 
 
 head(hilomodified)
 tail(hilomodified)
 
 ```
-
-# Separating the Data by Storm Events
-=======
 # Separating the Data by Storm
 
 # using base R
